@@ -1,3 +1,20 @@
+### Login
+POST http://localhost:3003/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "suho",
+    "password": 12345
+}
+### signup
+POST http://localhost:3003/api/auth/signup
+Content-Type: application/json
+
+{
+    "username": "suho1",
+    "password": 12345,
+    "email" : "subho1@test.com"
+}
 ### GET groceries
 GET http://localhost:3003/api/groceries
 
