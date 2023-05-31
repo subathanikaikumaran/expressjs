@@ -1,0 +1,44 @@
+### GET groceries
+GET http://localhost:3003/api/groceries
+
+### GET groceries
+GET http://localhost:3003/api/groceries/banana
+
+
+### ADD A groceries
+POST http://localhost:3003/api/groceries
+Content-Type: application/json
+
+{
+    "item": "banana",
+    "quantity": 10
+}
+
+### GET market
+GET http://localhost:3003/api/market
+
+### GET market with query
+GET http://localhost:3003/api/market?miles=1
+
+### GET market with query
+GET http://localhost:3003/api/market?miles=1
+
+### UPDATE STATUS OF A groceries
+PATCH http://localhost:8383/changestatus
+Content-Type: application/json
+
+{
+    "name": "tomato",
+    "newStatus": "friend"
+}
+
+
+###DELETE A FRIEND
+DELETE http://localhost:8383/friends
+Content-Type: application/json
+
+{
+    "name": "banana"
+}
+
+
