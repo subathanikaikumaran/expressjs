@@ -1,35 +1,50 @@
 const { Router } = require("express");
-const User = require('../database/schemas/User');
+const User = require("../database/schemas/User");
+const { hashPassword, comparePassword } = require("../utils/helper");
 const router = Router();
 
-router.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  if (username && password) {
-    if (req.session.user) {
-      res.send(req.session.user);
-    } else {
-      req.session.user = {
-        username,
-      };
-      res.send(req.session);
-    }
+// router.post("/loginsession", (req, res) => {
+//   const { username, password } = req.body;
+//   if (username && password) {
+//     if (req.session.user) {
+//       res.send(req.session.user);
+//     } else {
+//       req.session.user = {
+//         username,
+//       };
+//       res.send(req.session);
+//     }
+//   } else {
+//     res.send(401);
+//   }
+// });
+
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.send(400);
+  const userDB = await User.findOne({ email });
+  if (!userDB) return res.send(401);
+  const isValid = comparePassword(password, userDB.password);
+  if (isValid) {
+    const userData = { username: userDB.username, email: userDB.email };
+    req.session.user = userData;
+    return res.status(200).json({ response: userData });
   } else {
-    res.send(401);
+    return res.status(401).json({ message: 'Invalid credentials' });
   }
 });
 
-
-
 router.post("/signup", async (req, res) => {
-    const { username, password,email } = req.body;
-    const userDB = await User.findOne({$or:[{username},{email}]});
-    if(userDB){
-        res.status(400).send({msg:'User already exists!'});
-    } else {
-        const newUser = await User.create({username,password,email});
-        // newUser.save();
-        res.send(201);
-    }
-  });
+  const { username, email } = req.body;
+  const userDB = await User.findOne({ $or: [{ email }] });
+  if (userDB) {
+    res.status(400).send({ msg: "User already exists!" });
+  } else {
+    const password = hashPassword(req.body.password);
+    const newUser = await User.create({ username, password, email });
+    // newUser.save();
+    res.send(201);
+  }
+});
 
 module.exports = router;

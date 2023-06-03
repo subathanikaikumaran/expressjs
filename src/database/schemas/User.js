@@ -5,14 +5,16 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.String,
     required: true,
   },
+  email: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+    unique:true,
+  },
   password: {
     type: mongoose.SchemaTypes.String,
     required: true,
   },
-  email: {
-    type: mongoose.SchemaTypes.String,
-    required: true,
-  },
+  
   creatAt: {
     type: mongoose.SchemaTypes.Date,
     required: true,
