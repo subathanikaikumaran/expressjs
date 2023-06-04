@@ -1,7 +1,10 @@
 const { Router } = require("express");
 const User = require("../database/schemas/User");
 const { hashPassword, comparePassword } = require("../utils/helper");
+const { validateInput } = require("../validation/validation");
+const passport = require("passport");
 const router = Router();
+require('../strategies/local');
 
 // router.post("/loginsession", (req, res) => {
 //   const { username, password } = req.body;
@@ -19,6 +22,12 @@ const router = Router();
 //   }
 // });
 
+router.post("/loginWithPassport", passport.authenticate('local'),(req, res) => {
+  console.log('Logged In');
+  res.send(200);
+});
+
+
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.send(400);
@@ -30,12 +39,37 @@ router.post("/login", async (req, res) => {
     req.session.user = userData;
     return res.status(200).json({ response: userData });
   } else {
-    return res.status(401).json({ message: 'Invalid credentials' });
+    return res.status(401).json({ message: "Invalid credentials" });
   }
 });
 
 router.post("/signup", async (req, res) => {
   const { username, email } = req.body;
+
+  // Define validation rules for each input field
+  const usernameRules = { required: true, minlength: 2 };
+  const passwordRules = { required: true, minlength: 5 };
+  const emailRules = { required: true, email: true };
+
+  // Validate input fields
+  const usernameValidation = validateInput(username, usernameRules);
+  const passwordValidation = validateInput(req.body.password, passwordRules);
+  const emailValidation = validateInput(email, emailRules);
+
+  // Check for validation errors
+  if (
+    !usernameValidation.valid ||
+    !passwordValidation.valid ||
+    !emailValidation.valid
+  ) {
+    const errors = {
+      username: usernameValidation.errors,
+      password: passwordValidation.errors,
+      email: emailValidation.errors,
+    };
+    return res.status(400).json({ errors });
+  }
+
   const userDB = await User.findOne({ $or: [{ email }] });
   if (userDB) {
     res.status(400).send({ msg: "User already exists!" });

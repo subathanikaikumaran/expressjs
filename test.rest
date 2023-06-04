@@ -3,7 +3,16 @@ POST http://localhost:3003/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "subho@test.com",
+    "email": "tha@gmail.com",
+    "password": "test1234"
+}
+
+### loginWithPassport
+POST http://localhost:3003/api/auth/loginWithPassport
+Content-Type: application/json
+
+{
+    "email": "tha@gmail.com",
     "password": "test1234"
 }
 
@@ -12,9 +21,9 @@ POST http://localhost:3003/api/auth/signup
 Content-Type: application/json
 
 {
-    "username": "suho",
+    "username": "suba",
     "password": "test1234",
-    "email" : "subho@test.com"
+    "email" : "tha@gmail.com"
 }
 
 ### GET groceries
