@@ -1,10 +1,14 @@
 const { Router } = require("express");
 const User = require("../database/schemas/User");
+const DiscordUser = require("../database/schemas/DiscordUser");
 const { hashPassword, comparePassword } = require("../utils/helper");
 const { validateInput } = require("../validation/validation");
 const passport = require("passport");
 const router = Router();
-require('../strategies/local');
+
+// If you need to use local strategies, then enable this
+// require('../strategies/local');
+require('../strategies/discord');
 
 // router.post("/loginsession", (req, res) => {
 //   const { username, password } = req.body;
@@ -24,6 +28,14 @@ require('../strategies/local');
 
 router.post("/loginWithPassport", passport.authenticate('local'),(req, res) => {
   console.log('Logged In');
+  res.send(200);
+});
+
+
+router.get("/discord", passport.authenticate('discord'),(req, res) => {
+  res.send(200);
+});
+router.get("/discord/redirect", passport.authenticate('discord'),(req, res) => {
   res.send(200);
 });
 
